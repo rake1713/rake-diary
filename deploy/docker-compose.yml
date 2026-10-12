@@ -1,0 +1,57 @@
+# Продакшен: Caddy (HTTPS, сертификат Let's Encrypt) → app. Наружу открыты только 80/443.
+# Запуск на сервере:  cd deploy && DIARY_DOMAIN=rake-diary.duckdns.org docker compose up -d --build
+name: driver-diary
+
+services:
+  app:
+    build:
+      context: ..
+    restart: unless-stopped
+    environment:
+      # Доверяем X-Forwarded-For только от Caddy — иначе клиент мог бы подделать
+      # свой IP и обойти ограничение попыток входа.
+      DIARY_FORWARDED_ALLOW_IPS: 172.30.0.10
+      DIARY_DEMO_PASSWORD: ${DIARY_DEMO_PASSWORD:-demo12345}
+      DIARY_DEMO2_PASSWORD: ${DIARY_DEMO2_PASSWORD:-demo2pass}
+    volumes:
+      - diary-data:/var/lib/diary
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    networks:
+      internal:
+        ipv4_address: 172.30.0.20
+    # Порт приложения наружу не публикуется.
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [app]
+    environment:
+      DIARY_DOMAIN: ${DIARY_DOMAIN:?укажите DIARY_DOMAIN, например rake-diary.duckdns.org}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    networks:
+      internal:
+        ipv4_address: 172.30.0.10
+
+volumes:
+  diary-data:
+  caddy-data:
+  caddy-config:
+
+networks:
+  internal:
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24

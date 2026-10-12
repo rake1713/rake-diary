@@ -1,0 +1,14 @@
+.DS_Store
+*.db
+*.db-*
+
+# Python
+__pycache__/
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Секреты — никогда в репозиторий
+.env
+.env.*
+!.env.example

@@ -1,0 +1,48 @@
+name: driver_diary
+description: "Дневник смен водителя"
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_secure_storage: ^11.2.0
+  http: ^1.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+flutter:
+  uses-material-design: true
+
+  # Шрифты лежат в приложении, а не грузятся с Google: работает офлайн
+  # и не нарушает CSP веб-версии. Лицензии OFL — рядом с файлами.
+  fonts:
+    - family: Onest
+      fonts:
+        - asset: assets/fonts/Onest.ttf
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono.ttf
+
+# Иконка приложения: исходник рисует tool/make_icon.py,
+# раскладка по платформам — `dart run flutter_launcher_icons`.
+flutter_launcher_icons:
+  image_path: assets/icon/icon.png
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  adaptive_icon_background: "#0D0E10"
+  adaptive_icon_foreground: assets/icon/icon_foreground.png
+  web:
+    generate: true
+    image_path: assets/icon/icon.png
+    background_color: "#0D0E10"
+    theme_color: "#FFB81C"
