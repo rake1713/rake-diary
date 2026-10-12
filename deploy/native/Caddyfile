@@ -1,0 +1,5 @@
+rake-diary.duckdns.org {
+	encode zstd gzip
+	header -Server
+	reverse_proxy 127.0.0.1:8000
+}
